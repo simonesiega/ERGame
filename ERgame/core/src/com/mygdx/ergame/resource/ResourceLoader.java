@@ -12,43 +12,27 @@ public class ResourceLoader {
     /**
      * Mappa per la gestione delle Texture
      */
-    private static final EnumMap<ResourceEnum, Texture> mapTexture = new EnumMap<ResourceEnum, Texture>(ResourceEnum.class);
+    private static final EnumMap<ResourceEnum, Texture> _mapTexture = new EnumMap<>(ResourceEnum.class);
 
-    private static EnumMap<ResourceEnum, Texture[]> mapAnimation = new EnumMap<ResourceEnum, Texture[]>(ResourceEnum.class);
+    private static final EnumMap<ResourceEnum, Texture[]> _mapAnimation = new EnumMap<>(ResourceEnum.class);
 
-    /**
-     *
-     * @param index
-     * @return
-     */
+
     public static Texture getTexture(ResourceEnum index) {
-        if (!mapTexture.containsKey(index)){
-            /*
-            switch (index) {
-                case LOGO:
-                    mapTexture.put(index, new Texture("badlogic.jpg"));
-                    break;
-                default: return null;
-            }
-            */
+        if (!_mapTexture.containsKey(index)){
             if (Objects.requireNonNull(index) == ResourceEnum.LOGO) {
-                mapTexture.put(index, new Texture("badlogic.jpg"));
+                _mapTexture.put(index, new Texture("badlogic.jpg"));
             } else {
                 return null;
             }
         }
-        return mapTexture.get(index);
+        return _mapTexture.get(index);
     }
 
-    /**
-     *
-     * @param index
-     * @return
-     */
+
     public static Texture[] getAnimation(ResourceEnum index) {
         Texture[] res = null;
 
-        if (!mapAnimation.containsKey(index)){
+        if (!_mapAnimation.containsKey(index)){
             switch (index) {
                 case KN_IDLE:
                     res = new Texture[10];
@@ -56,7 +40,7 @@ public class ResourceLoader {
                         res[i] = new Texture("knight/Knight_02__IDLE_00" + i +".png");
                         // mapAnimation.put(index, res);
                     }
-                    mapAnimation.put(index, res);
+                    _mapAnimation.put(index, res);
                     break;
 
                 case KN_WALK:
@@ -65,7 +49,7 @@ public class ResourceLoader {
                         res[i] = new Texture("knight/Knight_02__WALK_00" + i +".png");
                         // mapAnimation.put(index, res);
                     }
-                    mapAnimation.put(index, res);
+                    _mapAnimation.put(index, res);
                     break;
 
                 case KN_JUMP:
@@ -74,7 +58,7 @@ public class ResourceLoader {
                         res[i] = new Texture("knight/Knight_02__JUMP_00" + i +".png");
                         // mapAnimation.put(index, res);
                     }
-                    mapAnimation.put(index, res);
+                    _mapAnimation.put(index, res);
                     break;
 
                 case KN_RUN:
@@ -83,11 +67,11 @@ public class ResourceLoader {
                         res[i] = new Texture("knight/Knight_02__RUN_00" + i +".png");
                         // mapAnimation.put(index, res);
                     }
-                    mapAnimation.put(index, res);
+                    _mapAnimation.put(index, res);
                     break;
             }
         } else {
-            res = mapAnimation.get(index);
+            res = _mapAnimation.get(index);
         }
 
         return res;
