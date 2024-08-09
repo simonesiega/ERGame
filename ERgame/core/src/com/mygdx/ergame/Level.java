@@ -3,6 +3,7 @@ package com.mygdx.ergame;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import com.mygdx.ergame.object.Knight;
 import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
 import com.mygdx.library.Drawable;

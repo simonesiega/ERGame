@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import com.mygdx.ergame.object.Knight;
 import com.mygdx.library.Parameters;
 
 public class ERGame extends ApplicationAdapter implements InputProcessor {

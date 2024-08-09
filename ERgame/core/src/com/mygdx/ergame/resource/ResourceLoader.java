@@ -72,7 +72,7 @@ public class ResourceLoader {
                     break;
 
                 case KN_JUMP:
-                    res = new Texture[3];
+                    res = new Texture[1];
                     for (int i = 4; i < (4 + res.length); i++) {
                         res[i-4] = new Texture("knight/Knight_02__JUMP_00" + i +".png");
                         // _mapAnimation.put(index, res);

@@ -1,4 +1,4 @@
-package com.mygdx.ergame;
+package com.mygdx.ergame.object;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -6,10 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
-import com.mygdx.library.AnimatedSprite;
-import com.mygdx.library.GraphicObject;
 
-public class Knight extends GraphicObject {
+public class Knight extends GameObject {
 
     enum KNIGHT_STATE {
         IDLE,
@@ -17,8 +15,6 @@ public class Knight extends GraphicObject {
         RUN,
         JUMP
     }
-
-    private final AnimatedSprite _sprite;
 
     private final Texture[] _animIdle;
     private final Texture[] _animWalk;
@@ -32,8 +28,6 @@ public class Knight extends GraphicObject {
 
     private KNIGHT_STATE _state;
 
-    private final Vector2 _velocity;
-
     private int _frameSkip = 0;
 
     public Knight() {
@@ -44,14 +38,11 @@ public class Knight extends GraphicObject {
         _animRun = ResourceLoader.getAnimation(ResourceEnum.KN_RUN);
         _animJump = ResourceLoader.getAnimation(ResourceEnum.KN_JUMP);
 
-        _sprite = new AnimatedSprite(_animIdle);
         _sprite.setWidth(3);
         _sprite.setOffsetX(-1.5f);
         _sprite.setOffsetY(-0.5f);
 
         _state = KNIGHT_STATE.IDLE;
-
-        _velocity = new Vector2(0, 0);
 
         entryWalk();
     }
@@ -78,25 +69,6 @@ public class Knight extends GraphicObject {
 
     public void setJump(boolean jump){
         _isJumping = jump;
-    }
-
-    /**
-     * Restituisce una copia della velocity del cavaliere nel momento in cui ho fatto richiesta
-     * return _velocity restituisce l istanza della velocity del cavaliere che puó essere modificata in qualunque momento
-     * @return foto velocity del cavaliere
-     */
-    public Vector2 getVelocity() {
-        return new Vector2(_velocity);
-    }
-
-    public void setVelocity(Vector2 v) {
-        _velocity.x = v.x;
-        _velocity.y = v.y;
-    }
-
-    public void setVelocity(float vx, float vy){
-        _velocity.x = vx;
-        _velocity.y = vy;
     }
 
     public boolean isWalking(){
@@ -188,7 +160,7 @@ public class Knight extends GraphicObject {
         _state = KNIGHT_STATE.JUMP;
         _sprite.setAnimation(_animJump);
         _frameSkip = 0;
-        _velocity.y = 0.3f;
+        _velocity.y = 0.12f;
 
         _isJumping = false;
     }
@@ -199,7 +171,7 @@ public class Knight extends GraphicObject {
             _frameSkip++;
         }
         else _frameSkip = 0;
-        _velocity.y -= 0.02f;
+        _velocity.y -= 0.005f;
         setY(_y + _velocity.y);
     }
 }
