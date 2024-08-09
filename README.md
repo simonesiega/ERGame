@@ -62,5 +62,5 @@ Questo progetto è licenziato sotto la Licenza MIT - vedi il file LICENSE per i 
 Per qualsiasi domanda o segnalazione di bug, puoi contattare l'autore del progetto:
 
 - **Nome**: Simone Siega
-- **Email**: tuo@email.com
+- **Email**: simonesiega1@gmail.com
 - **GitHub**: simonesiega
