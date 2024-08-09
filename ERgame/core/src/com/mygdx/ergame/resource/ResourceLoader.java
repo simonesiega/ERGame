@@ -19,10 +19,30 @@ public class ResourceLoader {
 
     public static Texture getTexture(ResourceEnum index) {
         if (!_mapTexture.containsKey(index)){
-            if (Objects.requireNonNull(index) == ResourceEnum.LOGO) {
-                _mapTexture.put(index, new Texture("badlogic.jpg"));
-            } else {
-                return null;
+            switch (index){
+                case LOGO:
+                    _mapTexture.put(index, new Texture("badlogic.jpg"));
+                    break;
+
+                case SKY_LEVEL:
+                    _mapTexture.put(index, new Texture("level00/Sky.png"));
+                    break;
+
+                case BG_LEVEL:
+                    _mapTexture.put(index, new Texture("level00/bg.png"));
+                    break;
+
+                case MG_LEVEL:
+                    _mapTexture.put(index, new Texture("level00/mg.png"));
+                    break;
+
+                case FG_LEVEL:
+                    _mapTexture.put(index, new Texture("level00/fg.png"));
+                    break;
+
+                case G_LEVEL:
+                    _mapTexture.put(index, new Texture("level00/g.png"));
+                    break;
             }
         }
         return _mapTexture.get(index);
@@ -38,7 +58,6 @@ public class ResourceLoader {
                     res = new Texture[10];
                     for (int i = 0; i < res.length; i++) {
                         res[i] = new Texture("knight/Knight_02__IDLE_00" + i +".png");
-                        // mapAnimation.put(index, res);
                     }
                     _mapAnimation.put(index, res);
                     break;
@@ -65,7 +84,6 @@ public class ResourceLoader {
                     res = new Texture[10];
                     for (int i = 0; i < res.length; i++) {
                         res[i] = new Texture("knight/Knight_02__RUN_00" + i +".png");
-                        // mapAnimation.put(index, res);
                     }
                     _mapAnimation.put(index, res);
                     break;

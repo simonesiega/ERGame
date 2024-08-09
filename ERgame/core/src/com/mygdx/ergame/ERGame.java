@@ -19,9 +19,11 @@ public class ERGame extends ApplicationAdapter implements InputProcessor {
 	Camera _cam;
 
 	Knight _knight;
+	Level _level;
+
 	boolean _walk = true;
 
-	float _floorLevel = 0.3f;
+	float _floorLevel = 0.2f;
 	
 	@Override
 	public void create () {
@@ -34,6 +36,9 @@ public class ERGame extends ApplicationAdapter implements InputProcessor {
 		_knight = new Knight();
 		_knight.setX(-0.5f);
 		_knight.setY(_floorLevel);
+
+		_level = new Level("Lvl 00", _camWidth * Parameters.getInverseAspectRatio());
+		_level.setKnight(_knight);
 
 		Gdx.input.setInputProcessor(this);
 	}
@@ -49,14 +54,15 @@ public class ERGame extends ApplicationAdapter implements InputProcessor {
 			_knight.setRun(true);
 			_knight.setY(_floorLevel);
 		}
-		_knight.update();
+
+		_level.update();
 
 		_cam.update();
 		_batch.setProjectionMatrix(_cam.combined);
 
 		_batch.begin();
 
-		_knight.draw(_batch);
+		_level.draw(_batch);
 
 		_batch.end();
 	}
