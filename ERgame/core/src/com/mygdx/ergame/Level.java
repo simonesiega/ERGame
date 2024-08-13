@@ -3,6 +3,8 @@ package com.mygdx.ergame;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import com.mygdx.ergame.object.Coin;
+import com.mygdx.ergame.object.GameObject;
 import com.mygdx.ergame.object.Knight;
 import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
@@ -30,6 +32,8 @@ public class Level implements Drawable {
 
     private Knight _knight;
 
+    private GameObject[] _object;
+
     public Level(String name, float height) {
         super();
 
@@ -51,6 +55,13 @@ public class Level implements Drawable {
         this._skyPicture = ResourceLoader.getTexture(ResourceEnum.SKY_LEVEL);
 
         this._knight = null;
+
+        this._object = new GameObject[100];
+
+        _object[0] = new Coin();
+        _object[0].setX(4);
+        _object[0].setY(0.5f);
+        _object[0].setVelocity(this._speed, 0);
     }
 
     public float getSpeed() {
@@ -83,6 +94,11 @@ public class Level implements Drawable {
         sb.draw(_fgPicture, _fx, 0, _width, _height);
         sb.draw(_fgPicture, _fx + _width, 0, _width, _height);
 
+        if (!_knight.isWalking()) {
+            for (GameObject object : _object) {
+                if (object != null) object.draw(sb);
+            }
+        }
 
         _knight.draw(sb);
 
@@ -94,6 +110,11 @@ public class Level implements Drawable {
         _knight.update();
 
         if (!_knight.isWalking()) {
+
+            for (GameObject object : _object) {
+                if (object != null) object.update();
+            }
+
             _fx += _speed;
 
             if (_fx <= -_width) _fx = _fx + _width;

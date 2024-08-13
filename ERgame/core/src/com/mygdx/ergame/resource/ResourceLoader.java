@@ -87,6 +87,14 @@ public class ResourceLoader {
                     }
                     _mapAnimation.put(index, res);
                     break;
+
+                case COIN_GOLD:
+                    res = new Texture[30];
+                    for (int i = 0; i < res.length; i++) {
+                        res[i] = new Texture("coin/gold_0" + (i  / 3) + ".png");
+                    }
+                    _mapAnimation.put(index, res);
+                    break;
             }
         } else {
             res = _mapAnimation.get(index);

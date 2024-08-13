@@ -1,9 +1,7 @@
 package com.mygdx.ergame.object;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
 
@@ -38,6 +36,7 @@ public class Knight extends GameObject {
         _animRun = ResourceLoader.getAnimation(ResourceEnum.KN_RUN);
         _animJump = ResourceLoader.getAnimation(ResourceEnum.KN_JUMP);
 
+        _sprite.setAnimation(_animIdle);
         _sprite.setWidth(3);
         _sprite.setOffsetX(-1.5f);
         _sprite.setOffsetY(-0.5f);
@@ -45,18 +44,6 @@ public class Knight extends GameObject {
         _state = KNIGHT_STATE.IDLE;
 
         entryWalk();
-    }
-
-    @Override
-    public void setX(float x) {
-        super.setX(x);
-        _sprite.setX(x);
-    }
-
-    @Override
-    public void setY(float y) {
-        super.setY(y);
-        _sprite.setY(y);
     }
 
     public void setWalk(boolean walk){
@@ -85,11 +72,6 @@ public class Knight extends GameObject {
 
     public boolean isFalling(){
         return _state == KNIGHT_STATE.JUMP && _velocity.y <= 0;
-    }
-
-    @Override
-    public void draw(SpriteBatch sb) {
-        _sprite.draw(sb);
     }
 
     public void update(){
@@ -136,14 +118,15 @@ public class Knight extends GameObject {
         }
         else _frameSkip = 0;
 
-        setX(_x + _velocity.x);
+        updatePhysics();
     }
 
     private void entryRun(){
         _state = KNIGHT_STATE.RUN;
         _sprite.setAnimation(_animRun);
         _frameSkip = 0;
-        _velocity.x = 0;
+        setVelocity(0, 0);
+        setAcceleration(0, 0);
 
         _isRunning = false;
     }
@@ -161,6 +144,7 @@ public class Knight extends GameObject {
         _sprite.setAnimation(_animJump);
         _frameSkip = 0;
         _velocity.y = 0.12f;
+        _acceleration.y = -0.005f;
 
         _isJumping = false;
     }
@@ -171,7 +155,7 @@ public class Knight extends GameObject {
             _frameSkip++;
         }
         else _frameSkip = 0;
-        _velocity.y -= 0.005f;
-        setY(_y + _velocity.y);
+
+        updatePhysics();
     }
 }

@@ -1,13 +1,16 @@
 package com.mygdx.ergame.object;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+
 import com.mygdx.library.AnimatedSprite;
 import com.mygdx.library.GraphicObject;
 
-public class GameObject extends GraphicObject {
+public abstract class GameObject extends GraphicObject {
     protected final AnimatedSprite _sprite;
 
     protected final Vector2 _velocity;    // Velocity sull'asse x e y
+    protected final Vector2 _acceleration;
     protected final Vector2 _barycentre;  // Baricentro rispetto alla posizione dell oggetto
 
     protected float _radius;
@@ -18,9 +21,23 @@ public class GameObject extends GraphicObject {
         _sprite = new AnimatedSprite();
 
         _velocity = new Vector2(0, 0);
+        _acceleration = new Vector2(0, 0);
         _barycentre = new Vector2(0, 0);
 
         _radius = 0;
+    }
+
+
+    @Override
+    public void setX(float x) {
+        super.setX(x);
+        _sprite.setX(x);
+    }
+
+    @Override
+    public void setY(float y) {
+        super.setY(y);
+        _sprite.setY(y);
     }
 
     /**
@@ -34,9 +51,9 @@ public class GameObject extends GraphicObject {
     }
 
     /**
-     * Imposta la velocitá dell oggetto
+     * Imposta la velocity dell oggetto
      *
-     * @param v un vettore contenente la velocitá lungo i due assi di riferimento
+     * @param v un vettore contenente la velocity lungo i due assi di riferimento
      */
     public void setVelocity(Vector2 v) {
         _velocity.x = v.x;
@@ -44,7 +61,7 @@ public class GameObject extends GraphicObject {
     }
 
     /**
-     * Imposta la velocitá dell oggetto
+     * Imposta la velocity dell oggetto
      *
      * @param vx la velocitá sull asse x
      * @param vy la velocitá sull asse y
@@ -52,6 +69,20 @@ public class GameObject extends GraphicObject {
     public void setVelocity(float vx, float vy){
         _velocity.x = vx;
         _velocity.y = vy;
+    }
+
+    public Vector2 getAcceleration() {
+        return new Vector2(_acceleration);
+    }
+
+    public void setAcceleration(Vector2 a) {
+        _acceleration.x = a.x;
+        _acceleration.y = a.y;
+    }
+
+    public void setAcceleration(float ax, float ay){
+        _acceleration.x = ax;
+        _acceleration.y = ay;
     }
 
     /**
@@ -93,7 +124,17 @@ public class GameObject extends GraphicObject {
     }
 
     protected void updatePhysics() {
+        _velocity.x += _acceleration.x;
+        _velocity.y += _acceleration.y;
+
         setX(_x + _velocity.x);
         setY(_y + _velocity.y);
+    }
+
+    public abstract void update();
+
+    @Override
+    public void draw(SpriteBatch sb) {
+        _sprite.draw(sb);
     }
 }

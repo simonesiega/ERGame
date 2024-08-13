@@ -12,5 +12,7 @@ public enum ResourceEnum {
     BG_LEVEL,
     MG_LEVEL,
     FG_LEVEL,
-    G_LEVEL
+    G_LEVEL,
+
+    COIN_GOLD
 }
