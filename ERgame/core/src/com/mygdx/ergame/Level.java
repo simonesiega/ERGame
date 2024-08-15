@@ -1,6 +1,8 @@
 package com.mygdx.ergame;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.mygdx.ergame.object.Coin;
@@ -10,6 +12,8 @@ import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
 import com.mygdx.library.Drawable;
 import com.mygdx.library.Parameters;
+
+import java.util.ArrayList;
 
 /**
  * La classe `Level` rappresenta un livello di gioco, contenente un cavaliere, oggetti e texture di sfondo.
@@ -39,11 +43,17 @@ public class Level implements Drawable {
     private final Texture _mgPicture;
     private final Texture _skyPicture;
 
+    private final Texture _heartKnightPicture;
+    private final Texture _coinPicture;
+    private final BitmapFont _fontNumberCoin;
+
     // Riferimento al cavaliere presente nel livello
     private Knight _knight;
 
     // Oggetti presenti nel livello, come le monete
-    private final GameObject[] _objects;
+    private final ArrayList<GameObject> _objects;
+
+    private int _numberCoin;
 
     /**
      * Costruttore della classe `Level`.
@@ -73,16 +83,19 @@ public class Level implements Drawable {
         this._mgPicture = ResourceLoader.getTexture(ResourceEnum.MG_LEVEL);
         this._skyPicture = ResourceLoader.getTexture(ResourceEnum.SKY_LEVEL);
 
+        this._heartKnightPicture = ResourceLoader.getTexture(ResourceEnum.CUORE_CAVALIERE);
+        this._coinPicture = ResourceLoader.getTexture(ResourceEnum.COIN_GOLD);
+        this._fontNumberCoin = new BitmapFont();
+
         this._knight = null;
 
-        // Inizializzazione degli oggetti nel livello (ad es. monete)
-        this._objects = new GameObject[10];
+        this._numberCoin = 0;
 
-        for (int i = 0; i < _objects.length; i++) {
-            _objects[i] = new Coin();
-            _objects[i].setX((float) (4 + Math.random() * 3 * i));
-            _objects[i].setY(0.5f);
-            _objects[i].setVelocity(this._speed, 0);
+        // Inizializzazione degli oggetti nel livello (ad es. monete)
+        this._objects = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            createNewCoin();
         }
     }
 
@@ -131,6 +144,14 @@ public class Level implements Drawable {
         this._knight = knight;
     }
 
+    private void createNewCoin() {
+        Coin coin = new Coin();
+        coin.setX((float) (4 + Math.random() * 15));
+        coin.setY((float) (0.5 + Math.random() * 2));
+        coin.setVelocity(this._speed, 0);
+        _objects.add(coin);
+    }
+
     /**
      * Metodo per disegnare il livello e tutti i suoi componenti (sfondi, oggetti e cavaliere).
      *
@@ -154,6 +175,28 @@ public class Level implements Drawable {
             for (GameObject object : _objects) {
                 if (object != null) object.draw(sb);
             }
+
+            // Disegna la barra della salute
+            float dimensionHeart = 0.15f;
+            float healthBarXOffset = 0.02f;
+            float healthBarYOffset = 2.78f;
+            // System.out.println("Drawing health bar at: " + xOffset + ", " + yOffset);
+
+            int numberHeart = (int) (_knight.getHealth() / (_knight.getMaxHealth() / 10) + 1);
+            // System.out.println(numberHeart);
+
+            for (int i = 0; i < numberHeart; i++) {
+                sb.draw(_heartKnightPicture, healthBarXOffset + (dimensionHeart * i), healthBarYOffset, dimensionHeart, dimensionHeart);
+            }
+
+            // Stampa il numero di coin raccolti
+            float dimensionCoin = 0.15f;
+            float coinNumberXOffset = 0.03f;
+            float coinNumberYOffset = 2.78f - dimensionHeart - 0.02f;
+
+            sb.draw(_coinPicture, coinNumberXOffset, coinNumberYOffset, dimensionCoin, dimensionCoin);
+            _fontNumberCoin.setColor(Color.BLACK);
+            _fontNumberCoin.draw(sb, " Coin: " + _numberCoin, coinNumberXOffset, coinNumberYOffset + dimensionCoin + 0.02f);
         }
 
         // Disegna il cavaliere
@@ -172,8 +215,8 @@ public class Level implements Drawable {
 
         if (!_knight.isWalking()) {
             // Aggiorna la posizione degli oggetti e gestisce le collisioni
-            for (int i = 0; i < _objects.length; i++) {
-                GameObject object = _objects[i];
+            for (int i = 0; i < _objects.size(); i++) {
+                GameObject object = _objects.get(i);
 
                 if (object != null) {
                     object.update();
@@ -182,7 +225,12 @@ public class Level implements Drawable {
                     if (_knight.collidesWith(object)) {
                         _knight.manageCollisionWith(object);
                         object.manageCollisionWith(_knight);
-                        _objects[i] = null;
+
+                        if (object instanceof Coin) {
+                            collectedCoin();
+                        }
+
+                        refreshCoin(i);
                     }
                 }
             }
@@ -197,5 +245,14 @@ public class Level implements Drawable {
             _bx += _speed * 0.25f;
             if (_bx <= -_width) _bx = _bx + _width;
         }
+    }
+
+    private void collectedCoin(){
+        _numberCoin++;
+    }
+
+    private void refreshCoin(int index){
+        _objects.remove(index);
+        createNewCoin();
     }
 }

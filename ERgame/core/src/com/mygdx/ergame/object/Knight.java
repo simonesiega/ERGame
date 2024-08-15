@@ -38,6 +38,9 @@ public class Knight extends GameObject {
     // Contatore per gestire la frequenza dei frame dell'animazione
     private int _frameSkip = 0;
 
+    private float _healt;
+    private float _maxHealt;
+
     /**
      * Costruttore di default della classe Knight. Inizializza le animazioni,
      * lo sprite, il raggio di collisione, il baricentro e lo stato iniziale.
@@ -61,11 +64,22 @@ public class Knight extends GameObject {
         setRadius(0.4f);
         setBarycentre(0.1f, 0.4f);
 
+        // Imposta la vita del cavaliere
+        _maxHealt = _healt = 200;
+
         // Stato iniziale del cavaliere
         _state = KNIGHT_STATE.IDLE;
 
         // Inizia lo stato di camminata
         entryWalk();
+    }
+
+    public float getHealth(){
+        return _healt;
+    }
+
+    public float getMaxHealth(){
+        return _maxHealt;
     }
 
     /**

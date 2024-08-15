@@ -56,6 +56,9 @@ public class Coin extends GameObject {
      */
     @Override
     public void manageCollisionWith(GameObject other) {
-        _collisionKnightSound.play(); // Riproduce il suono della collisione
+        // NB funziona solo con la prima moneta
+        if (_collisionKnightSound != null){
+            _collisionKnightSound.play();
+        }
     }
 }

@@ -2,6 +2,8 @@ package com.mygdx.ergame.resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.EnumMap;
@@ -59,6 +61,14 @@ public class ResourceLoader {
 
                 case BUBBLE_COLLISION:
                     _mapTexture.put(index, new Texture("bubble.png"));
+                    break;
+
+                case CUORE_CAVALIERE:
+                    _mapTexture.put(index, new Texture("knight/heart.png"));
+                    break;
+
+                case COIN_GOLD:
+                    _mapTexture.put(index, new Texture("coin/gold_00.png"));
                     break;
             }
         }

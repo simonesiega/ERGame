@@ -30,5 +30,8 @@ public enum ResourceEnum {
     BUBBLE_COLLISION, // Texture per la bolla di collisione
 
     // Risorse audio
-    AUDIO_COIN; // Effetto sonoro quando il cavaliere raccoglie una moneta
+    AUDIO_COIN, // Effetto sonoro quando il cavaliere raccoglie una moneta
+
+    // Texture dati Knight
+    CUORE_CAVALIERE,
 }
