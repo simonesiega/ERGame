@@ -41,4 +41,6 @@ public enum ResourceEnum {
     // Texture dati Knight
     LEFT_HEART,
     RIGHT_HEART,
+
+    GAME_OVER,
 }

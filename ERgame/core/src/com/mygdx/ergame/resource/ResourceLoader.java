@@ -74,6 +74,10 @@ public class ResourceLoader {
                 case COIN_GOLD:
                     _mapTexture.put(index, new Texture("coin/gold_00.png"));
                     break;
+
+                case GAME_OVER:
+                    _mapTexture.put(index, new Texture("round/gameover.jpg"));
+                    break;
             }
         }
         return _mapTexture.get(index);

@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import com.mygdx.ergame.object.Knight;
+import com.mygdx.ergame.resource.ResourceEnum;
+import com.mygdx.ergame.resource.ResourceLoader;
 import com.mygdx.library.Parameters;
 
 /**

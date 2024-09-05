@@ -9,7 +9,8 @@ public abstract class Character extends GameObject{
         IDLE,   // Personaggio fermo
         WALK,   // Personaggio che cammina
         RUN,    // Personaggio che corre
-        JUMP    // Personaggio che salta
+        JUMP,   // Personaggio che salta
+        SLIDING // Personaggio che scrivola
     }
 
     // Stato attuale del personaggio

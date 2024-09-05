@@ -66,6 +66,8 @@ public class Level implements Drawable {
 
     private int _numberCoin;
 
+    private boolean _finished = false;
+
     /**
      * Costruttore della classe `Level`.
      * Inizializza il livello con il nome, altezza, velocità e carica le texture e gli oggetti.
@@ -158,25 +160,25 @@ public class Level implements Drawable {
     private void initObjGame(){
         // Riempio arraylist coins
         for (int i = 0; i < 10; i++) {
-            createNewCoin();
+            createNewCoin(i + 1);
         }
 
         for (int i = 0; i < 5; i++) {
-            createNewOrc();
+            createNewOrc(i + 1);
         }
     }
 
-    private void createNewCoin() {
+    private void createNewCoin(int i) {
         Coin coin = new Coin();
-        coin.setX((float) (4 + Math.random() * 15));
+        coin.setX((float) ((2 + Math.random() * 2) * i));
         coin.setY((float) (0.5 + Math.random() * 2));
         coin.setVelocity(this._speed, 0);
         _coins.add(coin);
     }
 
-    private void createNewOrc() {
+    private void createNewOrc(int i) {
         Orc orc = new Orc();
-        orc.setX((float) (10 + Math.random() * 15));
+        orc.setX((float) ((5 + Math.random() * 15) * i));
         orc.setY(0.2f);
         orc.setVelocity(this._speed, 0);
         _orcs.add(orc);
@@ -189,37 +191,52 @@ public class Level implements Drawable {
      */
     @Override
     public void draw(SpriteBatch sb) {
-        // Disegna lo sfondo del cielo
-        sb.draw(_skyPicture, 0, 0, _width, _height);
+        if (_finished){
+            // Disegna un'immagine fissa
+            Texture fixedImage = ResourceLoader.getTexture(ResourceEnum.GAME_OVER);
+            BitmapFont font = new BitmapFont(); // Crea un font
+            font.setColor(Color.WHITE); // Imposta il colore del font
 
-        // Disegna i livelli di sfondo con movimento
-        sb.draw(_bgPicture, _bx, 0, _width, _height);
-        sb.draw(_bgPicture, _bx + _width, 0, _width, _height);
-        sb.draw(_mgPicture, _mx, 0, _width, _height);
-        sb.draw(_mgPicture, _mx + _width, 0, _width, _height);
-        sb.draw(_fgPicture, _fx, 0, _width, _height);
-        sb.draw(_fgPicture, _fx + _width, 0, _width, _height);
+            // Disegna l'immagine fissa
+            sb.draw(fixedImage, 0, 0, _width, _height); // Posiziona e ridimensiona l'immagine
 
-        // Disegna gli oggetti nel livello se il cavaliere non sta camminando
-        if (!_knight.isWalking()) {
-            for (Coin coin : _coins) {
-                if (coin != null) coin.draw(sb);
-            }
-
-            for (Orc orc : _orcs) {
-                if (orc != null) orc.draw(sb);
-            }
-
-            drawHelthBar(sb);
-            drawCoinBar(sb);
+            // Libera le risorse
+            font.dispose();
         }
 
-        // Disegna il cavaliere
-        _knight.draw(sb);
+        else {
+            // Disegna lo sfondo del cielo
+            sb.draw(_skyPicture, 0, 0, _width, _height);
 
-        // Disegna il terreno in primo piano
-        sb.draw(_gPicture, _fx, 0, _width, _height);
-        sb.draw(_gPicture, _fx + _width, 0, _width, _height);
+            // Disegna i livelli di sfondo con movimento
+            sb.draw(_bgPicture, _bx, 0, _width, _height);
+            sb.draw(_bgPicture, _bx + _width, 0, _width, _height);
+            sb.draw(_mgPicture, _mx, 0, _width, _height);
+            sb.draw(_mgPicture, _mx + _width, 0, _width, _height);
+            sb.draw(_fgPicture, _fx, 0, _width, _height);
+            sb.draw(_fgPicture, _fx + _width, 0, _width, _height);
+
+            // Disegna gli oggetti nel livello se il cavaliere non sta camminando
+            if (!_knight.isWalking()) {
+                for (Coin coin : _coins) {
+                    if (coin != null) coin.draw(sb);
+                }
+
+                for (Orc orc : _orcs) {
+                    if (orc != null) orc.draw(sb);
+                }
+
+                drawHelthBar(sb);
+                drawCoinBar(sb);
+            }
+
+            // Disegna il cavaliere
+            _knight.draw(sb);
+
+            // Disegna il terreno in primo piano
+            sb.draw(_gPicture, _fx, 0, _width, _height);
+            sb.draw(_gPicture, _fx + _width, 0, _width, _height);
+        }
     }
 
     private void drawHelthBar(SpriteBatch sb) {
@@ -244,64 +261,70 @@ public class Level implements Drawable {
      * Metodo per aggiornare lo stato del livello, incluso il cavaliere e gli oggetti.
      */
     public void update() {
-        _knight.update();
+        if (_knight.getHealth() <= 0){
+            _finished = true;
+        }
 
-        if (!_knight.isWalking()) {
-            // Aggiorna la posizione degli oggetti e gestisce le collisioni
-            // Coin
-            for (int i = 0; i < _coins.size(); i++) {
-                Coin coinTmp = _coins.get(i);
+        else {
+            _knight.update();
 
-                if (coinTmp != null) {
-                    coinTmp.update();
+            if (!_knight.isWalking()) {
+                // Aggiorna la posizione degli oggetti e gestisce le collisioni
+                // Coin
+                for (int i = 0; i < _coins.size(); i++) {
+                    Coin coinTmp = _coins.get(i);
 
-                    // Gestisce le collisioni tra il cavaliere e gli oggetti
-                    if (_knight.collidesWith(coinTmp)) {
-                        _knight.manageCollisionWith(coinTmp);
-                        coinTmp.manageCollisionWith(_knight);
+                    if (coinTmp != null) {
+                        coinTmp.update();
 
-                        collectedCoin();
-                        refreshCoin(i);
-                    }
-                }
-            }
+                        // Gestisce le collisioni tra il cavaliere e gli oggetti
+                        if (_knight.collidesWith(coinTmp)) {
+                            _knight.manageCollisionWith(coinTmp);
+                            coinTmp.manageCollisionWith(_knight);
 
-            for (int i = 0; i < _orcs.size(); i++) {
-                Orc orcTmp = _orcs.get(i);
-
-                if (orcTmp != null) {
-                    orcTmp.update();
-
-                    for (int j = 0; j < _coins.size(); j++) {
-                        Coin coinTmp = _coins.get(j);
-
-                        if (coinTmp != null) {
-
-                            if (orcTmp.collidesWith(coinTmp)) {
-                                refreshCoin(j);
-                            }
+                            collectedCoin();
+                            refreshCoin(i);
                         }
                     }
+                }
 
-                    // Gestisce le collisioni tra il cavaliere e gli oggetti
-                    if (_knight.collidesWith(orcTmp)) {
-                        _knight.manageCollisionWith(orcTmp);
-                        orcTmp.manageCollisionWith(_knight);
+                for (int i = 0; i < _orcs.size(); i++) {
+                    Orc orcTmp = _orcs.get(i);
 
-                        refreshOrc(i);
+                    if (orcTmp != null) {
+                        orcTmp.update();
+
+                        for (int j = 0; j < _coins.size(); j++) {
+                            Coin coinTmp = _coins.get(j);
+
+                            if (coinTmp != null) {
+
+                                if (orcTmp.collidesWith(coinTmp)) {
+                                    refreshCoin(j);
+                                }
+                            }
+                        }
+
+                        // Gestisce le collisioni tra il cavaliere e gli oggetti
+                        if (_knight.collidesWith(orcTmp)) {
+                            _knight.manageCollisionWith(orcTmp);
+                            orcTmp.manageCollisionWith(_knight);
+
+                            refreshOrc(i);
+                        }
                     }
                 }
+
+                // Aggiorna la posizione degli sfondi con scorrimento
+                _fx += _speed;
+                if (_fx <= -_width) _fx = _fx + _width;
+
+                _mx += _speed * 0.6f;
+                if (_mx <= -_width) _mx = _mx + _width;
+
+                _bx += _speed * 0.25f;
+                if (_bx <= -_width) _bx = _bx + _width;
             }
-
-            // Aggiorna la posizione degli sfondi con scorrimento
-            _fx += _speed;
-            if (_fx <= -_width) _fx = _fx + _width;
-
-            _mx += _speed * 0.6f;
-            if (_mx <= -_width) _mx = _mx + _width;
-
-            _bx += _speed * 0.25f;
-            if (_bx <= -_width) _bx = _bx + _width;
         }
     }
 
@@ -311,11 +334,11 @@ public class Level implements Drawable {
 
     private void refreshCoin(int index){
         _coins.remove(index);
-        createNewCoin();
+        createNewCoin(index + 1);
     }
 
     private void refreshOrc(int index){
         _orcs.remove(index);
-        createNewOrc();
+        createNewOrc(index + 1);
     }
 }
