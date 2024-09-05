@@ -16,6 +16,12 @@ public enum ResourceEnum {
     KN_RUN,    // Animazione del cavaliere mentre corre
     KN_JUMP,   // Animazione del cavaliere mentre salta
 
+    // Animazioni dell' orc
+    OR_IDLE,   // Animazione del cavaliere in stato di inattività
+    OR_WALK,   // Animazione dell' orc mentre cammina
+    OR_RUN,    // Animazione dell' orc mentre corre
+    OR_SLID,   // Animazione dell' orc mentre scivola
+
     // Texture di sfondo e livelli
     SKY_LEVEL, // Texture per il cielo del livello
     BG_LEVEL,  // Texture di background (sfondo) del livello
@@ -33,5 +39,6 @@ public enum ResourceEnum {
     AUDIO_COIN, // Effetto sonoro quando il cavaliere raccoglie una moneta
 
     // Texture dati Knight
-    CUORE_CAVALIERE,
+    LEFT_HEART,
+    RIGHT_HEART,
 }

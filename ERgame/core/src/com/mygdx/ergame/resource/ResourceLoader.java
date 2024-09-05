@@ -63,8 +63,12 @@ public class ResourceLoader {
                     _mapTexture.put(index, new Texture("bubble.png"));
                     break;
 
-                case CUORE_CAVALIERE:
-                    _mapTexture.put(index, new Texture("knight/heart.png"));
+                case LEFT_HEART:
+                    _mapTexture.put(index, new Texture("health/leftheart.png"));
+                    break;
+
+                case RIGHT_HEART:
+                    _mapTexture.put(index, new Texture("health/rightheart.png"));
                     break;
 
                 case COIN_GOLD:
@@ -87,6 +91,8 @@ public class ResourceLoader {
 
         if (!_mapAnimation.containsKey(index)) {
             switch (index) {
+
+                // Knight case
                 case KN_IDLE:
                     res = new Texture[10];
                     for (int i = 0; i < res.length; i++) {
@@ -119,6 +125,7 @@ public class ResourceLoader {
                     _mapAnimation.put(index, res);
                     break;
 
+                // Coin case
                 case COIN_GOLD:
                     res = new Texture[30];
                     for (int i = 0; i < res.length; i++) {
@@ -126,6 +133,36 @@ public class ResourceLoader {
                     }
                     _mapAnimation.put(index, res);
                     break;
+
+                // Orc case
+                case OR_IDLE:
+                    res = new Texture[18];
+                    for (int i = 0; i < res.length; i++) res[i] = (i < 10) ? new Texture("orc/Idle_00" + i + ".png") : new Texture("orc/Idle_0" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case OR_RUN:
+                    res = new Texture[12];
+                    for (int i = 0; i < res.length; i++) res[i] = (i < 10) ? new Texture("orc/Running_00" + i + ".png") : new Texture("orc/Running_0" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case OR_WALK:
+                    res = new Texture[24];
+                    for (int i = 0; i < 24; i++) res[i] = (i < 10) ? new Texture("orc/Walking_00" + i + ".png") : new Texture("orc/Walking_0" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case OR_SLID:
+                    res = new Texture[6];
+                    for (int i = 0; i < res.length; i++) res[i] = new Texture("orc/Sliding_00" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
             }
         } else {
             res = _mapAnimation.get(index);
@@ -142,17 +179,14 @@ public class ResourceLoader {
      * @return Il suono richiesto.
      */
     public static Sound getSound(ResourceEnum index) {
-        Sound res = null;
 
         if (!_mapSound.containsKey(index)) {
             switch (index) {
                 case AUDIO_COIN:
-                    res = Gdx.audio.newSound(Gdx.files.internal("audio/coin.wav"));
-                    _mapSound.put(index, res);
-                    break;
+                    return Gdx.audio.newSound(Gdx.files.internal("audio/coin.wav"));
             }
         }
 
-        return res;
+        return null;
     }
 }

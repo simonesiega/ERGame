@@ -4,21 +4,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
 
+import static com.mygdx.ergame.object.Knight.Constants.*;
 /**
  * La classe Knight rappresenta il cavaliere controllato dal giocatore.
  * Gestisce gli stati di animazione e il movimento del cavaliere, inclusi
  * camminata, corsa e salto. Estende {@link GameObject}.
  */
-public class Knight extends GameObject {
+public class Knight extends Character {
 
-    /**
-     * Enum che definisce i vari stati del cavaliere.
-     */
-    enum KNIGHT_STATE {
-        IDLE,   // Cavaliere fermo
-        WALK,   // Cavaliere che cammina
-        RUN,    // Cavaliere che corre
-        JUMP    // Cavaliere che salta
+    public static class Constants {
+        public static final float MAX_HEALTH = 200;
+        public static final float MIN_HEALTH = 0;
+
+        public static final float DAMAGE_ORC = 60;
     }
 
     // Array di texture per le animazioni del cavaliere
@@ -32,14 +30,8 @@ public class Knight extends GameObject {
     private boolean _isRunning = false;
     private boolean _isJumping = false;
 
-    // Stato attuale del cavaliere
-    private KNIGHT_STATE _state;
-
     // Contatore per gestire la frequenza dei frame dell'animazione
     private int _frameSkip = 0;
-
-    private float _healt;
-    private float _maxHealt;
 
     /**
      * Costruttore di default della classe Knight. Inizializza le animazioni,
@@ -65,21 +57,21 @@ public class Knight extends GameObject {
         setBarycentre(0.1f, 0.4f);
 
         // Imposta la vita del cavaliere
-        _maxHealt = _healt = 200;
+        _health = MAX_HEALTH;
 
         // Stato iniziale del cavaliere
-        _state = KNIGHT_STATE.IDLE;
+        _state = CHARACTER_STATE.IDLE;
 
         // Inizia lo stato di camminata
         entryWalk();
     }
 
     public float getHealth(){
-        return _healt;
+        return _health;
     }
 
     public float getMaxHealth(){
-        return _maxHealt;
+        return MAX_HEALTH;
     }
 
     /**
@@ -115,7 +107,7 @@ public class Knight extends GameObject {
      * @return true se il cavaliere sta camminando, false altrimenti
      */
     public boolean isWalking(){
-        return _state == KNIGHT_STATE.WALK;
+        return _state == CHARACTER_STATE.WALK;
     }
 
     /**
@@ -124,7 +116,7 @@ public class Knight extends GameObject {
      * @return true se il cavaliere sta correndo, false altrimenti
      */
     public boolean isRunning(){
-        return _state == KNIGHT_STATE.RUN;
+        return _state == CHARACTER_STATE.RUN;
     }
 
     /**
@@ -133,7 +125,7 @@ public class Knight extends GameObject {
      * @return true se il cavaliere sta saltando verso l'alto, false altrimenti
      */
     public boolean isJumping(){
-        return _state == KNIGHT_STATE.WALK && _velocity.y >= 0;
+        return _state == CHARACTER_STATE.WALK && _velocity.y >= 0;
     }
 
     /**
@@ -142,7 +134,7 @@ public class Knight extends GameObject {
      * @return true se il cavaliere sta cadendo, false altrimenti
      */
     public boolean isFalling(){
-        return _state == KNIGHT_STATE.JUMP && _velocity.y <= 0;
+        return _state == CHARACTER_STATE.JUMP && _velocity.y <= 0;
     }
 
     /**
@@ -185,6 +177,10 @@ public class Knight extends GameObject {
     @Override
     public void manageCollisionWith(GameObject other) {
         if (other instanceof Coin) System.out.println("Ho trovato una moneta");
+        else if (other instanceof Orc){
+            System.out.println("Collisione con orco");
+            _health -= DAMAGE_ORC;
+        }
     }
 
     /**
@@ -192,7 +188,7 @@ public class Knight extends GameObject {
      * l'animazione e la velocità.
      */
     private void entryWalk(){
-        _state = KNIGHT_STATE.WALK;  // Cambia lo stato a camminata
+        _state = CHARACTER_STATE.WALK;  // Cambia lo stato a camminata
         _sprite.setAnimation(_animWalk);  // Imposta l'animazione di camminata
         _frameSkip = 0;  // Resetta il contatore dei frame
         _velocity.x = 0.01f;  // Imposta la velocità orizzontale
@@ -219,7 +215,7 @@ public class Knight extends GameObject {
      * l'animazione e la velocità.
      */
     private void entryRun(){
-        _state = KNIGHT_STATE.RUN;  // Cambia lo stato a corsa
+        _state = CHARACTER_STATE.RUN;  // Cambia lo stato a corsa
         _sprite.setAnimation(_animRun);  // Imposta l'animazione di corsa
         _frameSkip = 0;  // Resetta il contatore dei frame
         setVelocity(0, 0);  // Resetta la velocità
@@ -245,7 +241,7 @@ public class Knight extends GameObject {
      * l'animazione, la velocità e l'accelerazione.
      */
     private void entryJump(){
-        _state = KNIGHT_STATE.JUMP;  // Cambia lo stato a salto
+        _state = CHARACTER_STATE.JUMP;  // Cambia lo stato a salto
         _sprite.setAnimation(_animJump);  // Imposta l'animazione di salto
         _frameSkip = 0;  // Resetta il contatore dei frame
         _velocity.y = 0.12f;  // Imposta la velocità verticale

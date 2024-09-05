@@ -19,7 +19,7 @@ import com.mygdx.library.Parameters;
  */
 public class ERGame extends ApplicationAdapter implements InputProcessor {
 	// Texture utilizzate nel gioco
-	Texture _img, img2;
+	Texture _img;
 
 	// Batch per disegnare gli sprite
 	SpriteBatch _batch;
