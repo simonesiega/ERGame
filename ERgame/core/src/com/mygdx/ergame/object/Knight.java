@@ -5,18 +5,24 @@ import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
 
 import static com.mygdx.ergame.object.Knight.Constants.*;
+
 /**
- * La classe Knight rappresenta il cavaliere controllato dal giocatore.
- * Gestisce gli stati di animazione e il movimento del cavaliere, inclusi
- * camminata, corsa e salto. Estende {@link GameObject}.
+ * La classe Knight rappresenta il cavaliere controllato dal giocatore nel gioco endless runner.
+ * Il cavaliere può eseguire diverse azioni come camminare, correre e saltare, con animazioni
+ * specifiche per ogni stato. Estende {@link Character}.
  */
 public class Knight extends Character {
 
+    /**
+     * Classe interna Constants che contiene costanti associate al cavaliere,
+     * inclusi valori di vita, danno e cura.
+     */
     public static class Constants {
-        public static final float MAX_HEALTH = 200;
-        public static final float MIN_HEALTH = 0;
+        public static final float MAX_HEALTH = 200;  // Vita massima del cavaliere
+        public static final float MIN_HEALTH = 0;    // Vita minima del cavaliere
 
-        public static final float DAMAGE_ORC = 60;
+        public static final float DAMAGE_ORC = 60;   // Danno subito dal cavaliere in caso di collisione con un orco
+        public static final float HEAL_FAIRY = 40;   // Quantità di vita recuperata dal cavaliere in caso di collisione con una fata
     }
 
     // Array di texture per le animazioni del cavaliere
@@ -25,7 +31,7 @@ public class Knight extends Character {
     private final Texture[] _animRun;
     private final Texture[] _animJump;
 
-    // Variabili per gestire i cambiamenti di stato
+    // Variabili per gestire i cambiamenti di stato del cavaliere
     private boolean _isWalking = false;
     private boolean _isRunning = false;
     private boolean _isJumping = false;
@@ -35,12 +41,12 @@ public class Knight extends Character {
 
     /**
      * Costruttore di default della classe Knight. Inizializza le animazioni,
-     * lo sprite, il raggio di collisione, il baricentro e lo stato iniziale.
+     * imposta la larghezza dello sprite, il raggio di collisione, il baricentro e lo stato iniziale.
      */
     public Knight() {
         super();
 
-        // Carica le animazioni dalle risorse
+        // Carica le animazioni relative al cavaliere dalle risorse
         _animIdle = ResourceLoader.getAnimation(ResourceEnum.KN_IDLE);
         _animWalk = ResourceLoader.getAnimation(ResourceEnum.KN_WALK);
         _animRun = ResourceLoader.getAnimation(ResourceEnum.KN_RUN);
@@ -66,10 +72,20 @@ public class Knight extends Character {
         entryWalk();
     }
 
+    /**
+     * Restituisce la vita attuale del cavaliere.
+     *
+     * @return la vita del cavaliere.
+     */
     public float getHealth(){
         return _health;
     }
 
+    /**
+     * Restituisce la vita massima del cavaliere.
+     *
+     * @return la vita massima del cavaliere.
+     */
     public float getMaxHealth(){
         return MAX_HEALTH;
     }
@@ -77,7 +93,7 @@ public class Knight extends Character {
     /**
      * Imposta lo stato di camminata del cavaliere.
      *
-     * @param walk true per attivare lo stato di camminata, false altrimenti
+     * @param walk {@code true} per attivare lo stato di camminata, {@code false} altrimenti.
      */
     public void setWalk(boolean walk){
         _isWalking = walk;
@@ -86,7 +102,7 @@ public class Knight extends Character {
     /**
      * Imposta lo stato di corsa del cavaliere.
      *
-     * @param run true per attivare lo stato di corsa, false altrimenti
+     * @param run {@code true} per attivare lo stato di corsa, {@code false} altrimenti.
      */
     public void setRun(boolean run){
         _isRunning = run;
@@ -95,7 +111,7 @@ public class Knight extends Character {
     /**
      * Imposta lo stato di salto del cavaliere.
      *
-     * @param jump true per attivare lo stato di salto, false altrimenti
+     * @param jump {@code true} per attivare lo stato di salto, {@code false} altrimenti.
      */
     public void setJump(boolean jump){
         _isJumping = jump;
@@ -104,7 +120,7 @@ public class Knight extends Character {
     /**
      * Verifica se il cavaliere è attualmente nello stato di camminata.
      *
-     * @return true se il cavaliere sta camminando, false altrimenti
+     * @return {@code true} se il cavaliere sta camminando, {@code false} altrimenti.
      */
     public boolean isWalking(){
         return _state == CHARACTER_STATE.WALK;
@@ -113,7 +129,7 @@ public class Knight extends Character {
     /**
      * Verifica se il cavaliere è attualmente nello stato di corsa.
      *
-     * @return true se il cavaliere sta correndo, false altrimenti
+     * @return {@code true} se il cavaliere sta correndo, {@code false} altrimenti.
      */
     public boolean isRunning(){
         return _state == CHARACTER_STATE.RUN;
@@ -122,7 +138,7 @@ public class Knight extends Character {
     /**
      * Verifica se il cavaliere è attualmente nello stato di salto verso l'alto.
      *
-     * @return true se il cavaliere sta saltando verso l'alto, false altrimenti
+     * @return {@code true} se il cavaliere sta saltando, {@code false} altrimenti.
      */
     public boolean isJumping(){
         return _state == CHARACTER_STATE.WALK && _velocity.y >= 0;
@@ -131,15 +147,14 @@ public class Knight extends Character {
     /**
      * Verifica se il cavaliere è attualmente nello stato di caduta.
      *
-     * @return true se il cavaliere sta cadendo, false altrimenti
+     * @return {@code true} se il cavaliere sta cadendo, {@code false} altrimenti.
      */
     public boolean isFalling(){
         return _state == CHARACTER_STATE.JUMP && _velocity.y <= 0;
     }
 
     /**
-     * Aggiorna lo stato del cavaliere in base alle variabili di stato e
-     * gestisce la transizione tra camminata, corsa e salto.
+     * Aggiorna lo stato del cavaliere, gestendo la transizione tra camminata, corsa e salto.
      */
     public void update(){
         switch (_state) {
@@ -172,14 +187,23 @@ public class Knight extends Character {
     /**
      * Gestisce la collisione del cavaliere con un altro oggetto di gioco.
      *
-     * @param other l'altro oggetto di gioco con cui il cavaliere ha colliso.
+     * @param other l'oggetto con cui il cavaliere ha colliso.
      */
     @Override
     public void manageCollisionWith(GameObject other) {
-        if (other instanceof Coin) System.out.println("Ho trovato una moneta");
+        if (other instanceof Coin){
+            // Azioni in caso di collisione con una moneta
+        }
         else if (other instanceof Orc){
-            System.out.println("Collisione con orco");
+            // Riduce la vita del cavaliere in caso di collisione con un orco
             _health -= DAMAGE_ORC;
+        }
+        else if (other instanceof Fairy){
+            // Cura il cavaliere in caso di collisione con una fata
+            float s = _health + HEAL_FAIRY;
+            if (s <= MAX_HEALTH){
+                _health = s;
+            }
         }
     }
 
@@ -217,6 +241,8 @@ public class Knight extends Character {
     private void entryRun(){
         _state = CHARACTER_STATE.RUN;  // Cambia lo stato a corsa
         _sprite.setAnimation(_animRun);  // Imposta l'animazione di corsa
+
+
         _frameSkip = 0;  // Resetta il contatore dei frame
         setVelocity(0, 0);  // Resetta la velocità
         setAcceleration(0, 0);  // Resetta l'accelerazione

@@ -167,6 +167,48 @@ public class ResourceLoader {
                     _mapAnimation.put(index, res);
                     break;
 
+                // Fairy case
+                case FA_IDLE:
+                    res = new Texture[5];
+                    for (int i = 0; i < res.length; i++) res[i] = new Texture("fairy/IDLE_00" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case FA_WALK:
+                    res = new Texture[5];
+                    for (int i = 0; i < res.length; i++) res[i] = new Texture("fairy/WALK_00" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case FA_FLY:
+                    res = new Texture[5];
+                    for (int i = 0; i < res.length; i++) res[i] = new Texture("fairy/FLY_00" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case FA_DIE:
+                    res = new Texture[5];
+                    for (int i = 1; i < res.length; i+=2) res[i] = new Texture("fairy/DIE_00" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case FA_HURT:
+                    res = new Texture[5];
+                    for (int i = 0; i < res.length; i++) res[i] = new Texture("fairy/HURT_00" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
+
+                case FA_JUMP:
+                    res = new Texture[5];
+                    for (int i = 0; i < res.length; i++) res[i] = new Texture("fairy/JUMP_00" + i + ".png");
+
+                    _mapAnimation.put(index, res);
+                    break;
             }
         } else {
             res = _mapAnimation.get(index);

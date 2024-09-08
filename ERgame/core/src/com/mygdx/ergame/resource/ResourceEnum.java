@@ -22,6 +22,14 @@ public enum ResourceEnum {
     OR_RUN,    // Animazione dell' orc mentre corre
     OR_SLID,   // Animazione dell' orc mentre scivola
 
+    // Animazioni della fata
+    FA_IDLE,   // Animazione della fata in stato di inattività
+    FA_WALK,   // Animazione della fata mentre cammina
+    FA_FLY,    // Animazione della fata mentre vola
+    FA_DIE,    // Animazione della fata mentre muore
+    FA_HURT,   // Animazione della fata mentre viene colpita
+    FA_JUMP,   // Animazione della fata mentre salta
+
     // Texture di sfondo e livelli
     SKY_LEVEL, // Texture per il cielo del livello
     BG_LEVEL,  // Texture di background (sfondo) del livello

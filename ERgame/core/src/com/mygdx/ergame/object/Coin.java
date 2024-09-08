@@ -5,62 +5,63 @@ import com.mygdx.ergame.resource.ResourceEnum;
 import com.mygdx.ergame.resource.ResourceLoader;
 
 /**
- * La classe Coin rappresenta una moneta nel gioco, che può interagire con altri oggetti,
- * come il cavaliere. Estende {@link GameObject} e implementa la logica specifica
- * per il comportamento della moneta, inclusa l'animazione e il suono della collisione.
+ * La classe Coin rappresenta una moneta all'interno del gioco endless runner,
+ * Estende {@link GameObject} e gestisce la logica della moneta, inclusa l'animazione
+ * e il suono di collisione quando il cavaliere la raccoglie.
  */
 public class Coin extends GameObject {
 
-    // Suono riprodotto quando la moneta collide con il cavaliere
+    /** Suono riprodotto quando la moneta collide con il cavaliere. */
     private final Sound _collisionKnightSound;
 
     /**
-     * Costruttore di default della classe Coin. Inizializza l'animazione, le dimensioni,
-     * il baricentro, il raggio di collisione e il suono associato alla collisione.
+     * Costruttore di default della classe Coin. Inizializza l'animazione della moneta,
+     * le sue dimensioni, il baricentro e il raggio di collisione. Carica inoltre il suono associato
+     * alla raccolta della moneta da parte del cavaliere.
      */
-    public Coin(){
+    public Coin() {
         super();
 
-        // Imposta l'animazione della moneta con l'animazione caricata dalle risorse
+        // Imposta l'animazione della moneta caricandola dalle risorse di gioco
         _sprite.setAnimation(ResourceLoader.getAnimation(ResourceEnum.COIN_GOLD));
 
-        // Imposta la larghezza dello sprite della moneta
+        // Definisce la larghezza dello sprite della moneta
         _sprite.setWidth(0.3f);
-        // Imposta l'offset orizzontale per centrare l'animazione
+        // Centra orizzontalmente l'animazione regolando l'offset
         _sprite.setOffsetX(-0.15f);
-        // Imposta l'offset verticale per centrare l'animazione
+        // Centra verticalmente l'animazione regolando l'offset
         _sprite.setOffsetY(-0.15f);
 
-        // Imposta il baricentro della moneta nel centro dell'oggetto
+        // Imposta il baricentro della moneta al centro dell'oggetto
         setBarycentre(0, 0);
-        // Imposta il raggio della sfera di collisione della moneta
+        // Definisce il raggio della sfera di collisione della moneta
         setRadius(0.15f);
 
-        // Carica il suono associato alla collisione della moneta con il cavaliere
+        // Carica il suono che viene riprodotto quando la moneta viene raccolta
         _collisionKnightSound = ResourceLoader.getSound(ResourceEnum.AUDIO_COIN);
     }
 
     /**
-     * Aggiorna lo stato della moneta, inclusa l'animazione e la fisica.
+     * Aggiorna lo stato della moneta nel ciclo di gioco. Gestisce l'aggiornamento
+     * dell'animazione e le dinamiche fisiche della moneta.
      */
-    public void update(){
-        _sprite.update();  // Aggiorna l'animazione dello sprite
-        updatePhysics();   // Aggiorna la posizione e la velocità della moneta
+    public void update() {
+        _sprite.update();  // Aggiorna l'animazione dello sprite della moneta
+        updatePhysics();   // Aggiorna la posizione e il movimento della moneta
     }
 
     /**
-     * Gestisce la collisione della moneta con un altro oggetto di gioco.
-     * Quando si verifica una collisione, viene riprodotto il suono della moneta.
+     * Gestisce la collisione tra la moneta e un altro oggetto di gioco.
+     * Quando il cavaliere raccoglie la moneta, viene riprodotto un suono di conferma.
      *
-     * @param other l'altro oggetto di gioco con cui la moneta ha colliso.
+     * @param other L'oggetto con cui la moneta ha colliso, come il cavaliere.
      */
     @Override
     public void manageCollisionWith(GameObject other) {
-        // NB funziona solo con la prima moneta
-
-        if (_collisionKnightSound != null){
-            _collisionKnightSound.stop(); // Ferma il suono precedente
-            _collisionKnightSound.play(); // Riproduci il suono nuovamente
+        // Esegui il suono solo se è disponibile
+        if (_collisionKnightSound != null) {
+            _collisionKnightSound.stop(); // Ferma eventuali suoni precedenti
+            _collisionKnightSound.play(); // Riproduci il suono della raccolta
         }
     }
 }

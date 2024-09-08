@@ -29,6 +29,10 @@ public class AnimatedSprite extends GraphicObject {
         this.currentFrame = 0;
     }
 
+    public int getCurrentFrame() {
+        return this.currentFrame;
+    }
+
     /**
      * Imposta l'animazione dello sprite.
      *

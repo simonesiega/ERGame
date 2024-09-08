@@ -45,8 +45,10 @@ public abstract class GameObject extends GraphicObject {
 
         _radius = 0;
 
+        /*
         // Carica la texture della risorsa per la gestione delle collisioni
         ResourceLoader.getTexture(ResourceEnum.BUBBLE_COLLISION);
+         */
     }
 
     @Override
@@ -178,6 +180,10 @@ public abstract class GameObject extends GraphicObject {
         _radius = r;
     }
 
+    public int getCurrentFrame() {
+        return _sprite.getCurrentFrame();
+    }
+
     /**
      * Aggiorna la fisica dell'oggetto, applicando l'accelerazione e aggiornando la posizione
      * in base alla velocità corrente.
@@ -209,8 +215,10 @@ public abstract class GameObject extends GraphicObject {
         // Calcola la posizione del baricentro nel mondo
         Vector2 pb = getWorldBarycentre();
 
+        /*
         // Disegna la bolla di collisione attorno all'oggetto
         sb.draw(ResourceLoader.getTexture(ResourceEnum.BUBBLE_COLLISION), pb.x - _radius, pb.y - _radius, _radius * 2, _radius * 2);
+        */
     }
 
     /**

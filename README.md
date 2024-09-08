@@ -1,7 +1,7 @@
 # ERGame
 
 ## Descrizione
-ERGame è un gioco 2D infinito sviluppato in Java utilizzando le librerie libGDX. In questo endless runner, i giocatori controllano un cavaliere che si muove attraverso un mondo infinito, raccogliendo monete lungo il cammino. Il gioco offre un'esperienza di corsa senza fine con un gameplay coinvolgente e dinamico, ideale per chi ama le sfide e i giochi arcade.
+ERGame è un gioco 2D infinito sviluppato in Java utilizzando le librerie libGDX. In questo endless runner, i giocatori controllano un cavaliere che si muove attraverso un mondo infinito, raccogliendo monete lungo il cammino. 
 
 ## Caratteristiche
 

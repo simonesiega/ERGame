@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.mygdx.ergame.object.Coin;
+import com.mygdx.ergame.object.Fairy;
 import com.mygdx.ergame.object.Knight;
 import com.mygdx.ergame.object.Orc;
 import com.mygdx.ergame.resource.ResourceEnum;
@@ -24,7 +25,7 @@ public class Level implements Drawable {
     private final String _name;
 
     // Lunghezza del livello e velocità di scorrimento
-    private float _length;
+    private final float _length;
     private float _speed;
 
     // Coordinate per la gestione del movimento degli sfondi
@@ -63,9 +64,14 @@ public class Level implements Drawable {
     // Oggetti presenti nel livello, come le monete
     private final ArrayList<Coin> _coins;
     private final ArrayList<Orc> _orcs;
+    private final ArrayList<Fairy> _fairys;
 
+    // Dati per la stampa finale
+    private boolean _finalPrintDone;
     private int _numberCoin;
+    private int _metersTravel;
 
+    // Gioco finito
     private boolean _finished = false;
 
     /**
@@ -108,6 +114,9 @@ public class Level implements Drawable {
         // Inizializzazione degli oggetti nel livello (ad es. monete)
         this._coins = new ArrayList<>();
         this._orcs = new ArrayList<>();
+        this._fairys = new ArrayList<>();
+
+        this._finalPrintDone = false;
 
         initObjGame();
     }
@@ -157,8 +166,13 @@ public class Level implements Drawable {
         this._knight = knight;
     }
 
-    private void initObjGame(){
-        // Riempio arraylist coins
+    /**
+     * Inizializza gli oggetti di gioco nel livello.
+     * Crea e aggiunge un numero predeterminato di monete, orchi e fate all'interno del livello.
+     * Le monete, gli orchi e le fate vengono posizionati casualmente lungo il livello e
+     * impostati con una velocità iniziale basata sulla velocità del livello stesso.
+     */
+    private void initObjGame() {
         for (int i = 0; i < 10; i++) {
             createNewCoin(i + 1);
         }
@@ -166,8 +180,19 @@ public class Level implements Drawable {
         for (int i = 0; i < 5; i++) {
             createNewOrc(i + 1);
         }
+
+        for (int i = 0; i < 5; i++) {
+            createNewFairy(i + 1);
+        }
     }
 
+    /**
+     * Crea una nuova moneta e la aggiunge alla lista delle monete nel livello.
+     * La moneta viene posizionata a una coordinata X e Y casuale e impostata con una velocità
+     * basata sulla velocità corrente del livello.
+     *
+     * @param i Un identificatore unico per la moneta, usato per determinare la sua posizione.
+     */
     private void createNewCoin(int i) {
         Coin coin = new Coin();
         coin.setX((float) ((2 + Math.random() * 2) * i));
@@ -176,6 +201,13 @@ public class Level implements Drawable {
         _coins.add(coin);
     }
 
+    /**
+     * Crea un nuovo orco e lo aggiunge alla lista degli orchi nel livello.
+     * L'orco viene posizionato a una coordinata X casuale e a una coordinata Y fissa, e viene
+     * impostato con una velocità basata sulla velocità corrente del livello.
+     *
+     * @param i Un identificatore unico per l'orco, usato per determinare la sua posizione.
+     */
     private void createNewOrc(int i) {
         Orc orc = new Orc();
         orc.setX((float) ((5 + Math.random() * 15) * i));
@@ -183,6 +215,22 @@ public class Level implements Drawable {
         orc.setVelocity(this._speed, 0);
         _orcs.add(orc);
     }
+
+    /**
+     * Crea una nuova fata e la aggiunge alla lista delle fate nel livello.
+     * La fata viene posizionata a una coordinata X casuale e a una coordinata Y variabile,
+     * e viene impostata con una velocità basata sulla velocità corrente del livello.
+     *
+     * @param i Un identificatore unico per la fata, usato per determinare la sua posizione.
+     */
+    private void createNewFairy(int i) {
+        Fairy fairy = new Fairy();
+        fairy.setX((float) ((5 + Math.random() * 15) * i));
+        fairy.setY((float)(1.5f * Math.random() + 0.30f));
+        fairy.setVelocity(this._speed, 0);
+        _fairys.add(fairy);
+    }
+
 
     /**
      * Metodo per disegnare il livello e tutti i suoi componenti (sfondi, oggetti e cavaliere).
@@ -202,6 +250,11 @@ public class Level implements Drawable {
 
             // Libera le risorse
             font.dispose();
+
+            if (!_finalPrintDone){
+                finalPrint();
+                _finalPrintDone = true;
+            }
         }
 
         else {
@@ -226,8 +279,12 @@ public class Level implements Drawable {
                     if (orc != null) orc.draw(sb);
                 }
 
-                drawHelthBar(sb);
-                drawCoinBar(sb);
+                for (Fairy fairy : _fairys) {
+                    if (fairy != null) fairy.draw(sb);
+                }
+
+                drawHealthBar(sb);
+                // drawCoinBar(sb);
             }
 
             // Disegna il cavaliere
@@ -239,7 +296,15 @@ public class Level implements Drawable {
         }
     }
 
-    private void drawHelthBar(SpriteBatch sb) {
+    /**
+     * Disegna la barra della salute del cavaliere sullo schermo.
+     * Utilizza le texture delle cuori per rappresentare visivamente la salute del cavaliere.
+     * La barra viene disegnata in base alla percentuale di salute rimanente del cavaliere,
+     * dove ogni cuore rappresenta una porzione della salute totale.
+     *
+     * @param sb `SpriteBatch` utilizzato per disegnare gli elementi sullo schermo.
+     */
+    private void drawHealthBar(SpriteBatch sb) {
         // System.out.println("Drawing health bar at: " + xOffset + ", " + yOffset);
 
         int numberHeart = (int) (_knight.getHealth() / (_knight.getMaxHealth()) * 20);
@@ -251,16 +316,21 @@ public class Level implements Drawable {
         }
     }
 
+
+    /*
     private void drawCoinBar(SpriteBatch sb) {
         sb.draw(_coinPicture, _coinNumberXOffset, _coinNumberYOffset, _dimensionCoinBar, _dimensionCoinBar);
         _fontNumberCoin.setColor(Color.BLACK);
         _fontNumberCoin.draw(sb, " Coin: " + _numberCoin, _coinNumberXOffset, _coinNumberYOffset + _dimensionCoinBar + 0.02f);
     }
+    */
 
     /**
      * Metodo per aggiornare lo stato del livello, incluso il cavaliere e gli oggetti.
      */
     public void update() {
+        _metersTravel++;
+
         if (_knight.getHealth() <= 0){
             _finished = true;
         }
@@ -270,6 +340,7 @@ public class Level implements Drawable {
 
             if (!_knight.isWalking()) {
                 // Aggiorna la posizione degli oggetti e gestisce le collisioni
+
                 // Coin
                 for (int i = 0; i < _coins.size(); i++) {
                     Coin coinTmp = _coins.get(i);
@@ -288,22 +359,12 @@ public class Level implements Drawable {
                     }
                 }
 
+                // Orchi
                 for (int i = 0; i < _orcs.size(); i++) {
                     Orc orcTmp = _orcs.get(i);
 
                     if (orcTmp != null) {
                         orcTmp.update();
-
-                        for (int j = 0; j < _coins.size(); j++) {
-                            Coin coinTmp = _coins.get(j);
-
-                            if (coinTmp != null) {
-
-                                if (orcTmp.collidesWith(coinTmp)) {
-                                    refreshCoin(j);
-                                }
-                            }
-                        }
 
                         // Gestisce le collisioni tra il cavaliere e gli oggetti
                         if (_knight.collidesWith(orcTmp)) {
@@ -311,6 +372,22 @@ public class Level implements Drawable {
                             orcTmp.manageCollisionWith(_knight);
 
                             refreshOrc(i);
+                        }
+                    }
+                }
+
+                // Fate
+                for (int i = 0; i < _fairys.size(); i++){
+                    Fairy fairyTmp = _fairys.get(i);
+
+                    if (fairyTmp != null) {
+                        fairyTmp.update();
+
+                        if (_knight.collidesWith(fairyTmp)) {
+                            _knight.manageCollisionWith(fairyTmp);
+                            fairyTmp.manageCollisionWith(_knight);
+
+                            refreshFairy(i);
                         }
                     }
                 }
@@ -328,17 +405,52 @@ public class Level implements Drawable {
         }
     }
 
-    private void collectedCoin(){
+    /**
+     * Incrementa il numero di monete raccolte dal cavaliere.
+     */
+    private void collectedCoin() {
         _numberCoin++;
     }
 
-    private void refreshCoin(int index){
+    /**
+     * Rimuove una moneta dall'indice specificato e ne crea una nuova per sostituirla.
+     *
+     * @param index L'indice della moneta da rimuovere.
+     */
+    private void refreshCoin(int index) {
         _coins.remove(index);
         createNewCoin(index + 1);
     }
 
-    private void refreshOrc(int index){
+    /**
+     * Rimuove un orco dall'indice specificato e ne crea uno nuovo per sostituirlo.
+     *
+     * @param index L'indice dell'orco da rimuovere.
+     */
+    private void refreshOrc(int index) {
         _orcs.remove(index);
         createNewOrc(index + 1);
+    }
+
+    /**
+     * Rimuove una fata dall'indice specificato e ne crea una nuova per sostituirla.
+     *
+     * @param index L'indice della fata da rimuovere.
+     */
+    private void refreshFairy(int index) {
+        _fairys.remove(index);
+        createNewFairy(index + 1);
+    }
+
+    /**
+     * Stampa i risultati finali quando il gioco è terminato.
+     */
+    private void finalPrint(){
+        for (int i = 0; i < 5; i++) {
+            System.out.println();
+        }
+
+        System.out.println("Hai raccolto " + _numberCoin + " Monete");
+        System.out.println("E hai percorso " + _metersTravel/60 + " metri.");
     }
 }
